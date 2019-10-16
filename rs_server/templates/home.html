@@ -1,0 +1,46 @@
+<!doctype html>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<title>A phototype for e-book recommendastion</title>
+
+
+
+<div>
+    <div>
+        
+        <form>
+            <p>Login as User:</p>
+            <input type="number" />
+            <input type="submit" />
+        </form>
+    </div>
+    <div>
+        <h2>Things You May Intereast</h2>
+        <div id="recommendation">
+            {% for book in recommend_info %}
+            <div class="book_box">
+                <a href="{{url_for('book_page',book_id=book.book_id)}}">
+                    <img class="book_avater" src="{{book.small_image_url}}">
+                </a>
+
+                <ul class="book_infos">
+                    <li>
+                        <h3>{{ book.title }}</h3>
+                    </li>
+                    <li>
+                        Authors: {{book.authors}}
+                    </li>
+                    <li>
+                        AVG Rating: {{book.average_rating}}
+                    </li>
+                    <li>
+                        Language: {{book.language_code}}
+                    </li>
+                </ul>
+            </div>
+
+            {% endfor %}
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,20 @@
+ul li{
+    list-style-type: none;
+    padding-inline-start: 0px;
+}
+.book_box{
+    display: table-row;
+    height: 80px;
+}
+.book_avater{
+    width: 50px;
+    height: 75px;
+    margin-top: 25px;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.book_infos{
+    display: table-cell;
+    vertical-align: middle;
+}

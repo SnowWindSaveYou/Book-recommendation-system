@@ -1,0 +1,29 @@
+<!doctype html>
+
+{% if book_title %}
+<title>{{ book_title }}</title>
+
+<div>
+    <h2>{{ book_title }}</h2>
+    <ul>
+        <li>
+            <img src = "{{book_cover}}">
+        </li>
+        <li>
+            Authors: {{book_authors}}
+        </li>
+        <li>
+            AVG Rating: {{book_rating}}
+        </li>
+        <li>
+            Language: {{book_language}}
+        </li>
+    </ul>
+    
+</div>
+<a href="{{home_url}}">back</a>
+
+{% else %}
+<title>Book 404</title>
+<h1>This Book is not found</h1>
+{% endif %}
