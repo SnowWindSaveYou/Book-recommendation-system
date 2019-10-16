@@ -17,7 +17,7 @@
     <div>
         <h2>Things You May Intereast</h2>
         <div id="recommendation">
-            {% for book in recommend_list %}
+            {% for book in recommend_info %}
             <div class="book_box">
                 <a href="{{url_for('book_page',book_id=book.book_id)}}">
                     <img class="book_avater" src="{{book.small_image_url}}">
