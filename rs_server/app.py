@@ -4,7 +4,8 @@ import json
 import os
 import base64
 import torch
-from models import NeuMF
+import numpy as np
+from models.NeuMF import NeuMF
 
 # from datetime import *
 # import time
@@ -14,6 +15,9 @@ from models import NeuMF
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 
+neu_model = torch.load("./checkpoints/neumf_model.pkg")
+NUM_ITEM = 10000
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #------------------------------------------------------------------------------------
 # Database model
 # 
@@ -38,6 +42,14 @@ class UserRating(db.Model):
 # 
 # 
 #------------------------------------------------------------------------------------
+def has_book(book_id):
+    book_info_result = db.session.execute('select * from books where book_id = {}'.format(book_id))
+    infos = list(book_info_result)
+    if len(infos)<1:
+        return False
+    else:
+        return True
+
 def get_book_info(book_id):
     book_info_result = db.session.execute('select * from books where book_id = {}'.format(book_id))
     keys = book_info_result.keys()
@@ -61,10 +73,10 @@ def get_book_infos(book_ids):
 #     return count
 
 def get_user_ratings(user_id):
-    rating_result = UserRating.query,filter(UserRating.user_id == user_id)
+    rating_result = UserRating.query.filter(UserRating.user_id == user_id).all()
     ratings = []
     for result in rating_result:
-        record = dict((zip(keys, result)))
+        record = [result.book_id, result.rating]
         ratings.append(record)
     return ratings
 
@@ -82,9 +94,10 @@ def add_user_rating(user_id,book_id,rating):
 def home_page():
     # req = json.loads(request.data)
     # user_id = req['user_id']
-    # recommend_list = get_recommend_list(user_id)
-    # recommend_info = get_book_infos(recommend_list)
-    recommend_info = get_book_infos([1,2,3,4,5])
+    user_id = 588
+    recommend_list = get_recommend_list(user_id)
+    recommend_info = get_book_infos(recommend_list)
+    # recommend_info = get_book_infos([1,2,3,4,5])
     return render_template('home.html',
         recommend_info = recommend_info
     )
@@ -115,11 +128,16 @@ def book_page(book_id):
 # Models 
 # 
 #------------------------------------------------------------------------------------
-
-# NeuMF_RS = torch.load('./models')
+def predict(model,user_id):
+    user_rating_pair = [(np.zeros((NUM_ITEM)) + user_id),np.arange(0,NUM_ITEM,1)]
+    local_batch  = torch.tensor(user_rating_pair).type(torch.long).to(device)
+    with torch.no_grad():
+        y_preds = model(local_batch[0], local_batch[1])
+    return y_preds
 
 def get_mf_results(user_id):
-    pass
+    predict_rating = predict(neu_model,user_id)
+    return predict_rating
 
 def get_item_results(user_id):
     pass
@@ -127,14 +145,22 @@ def get_item_results(user_id):
 def get_simi_item_results(item_id):
     pass
 
-
 def get_recommend_list(user_id):
     user_ratings = get_user_ratings(user_id)
     recommend_list = []
-    if user_ratings >30:
-        result = get_mf_results(user_id)
+    if len(user_ratings) >30:
+        predict_rating = get_mf_results(user_id).numpy()
+        for i in user_ratings:
+            predict_rating[i[0]]=0
+        for i in range(100):
+            recommend = np.argmax(predict_rating)
+            recommend_list.append(recommend)
+            predict_rating[recommend]=0
+
     else:
         recommend_list = [1,2,3,4,5,6,7,8,9,10]
+
+    print("___recommend_list",recommend_list)
     return recommend_list
 #------------------------------------------------------------------------------------r
 # 
