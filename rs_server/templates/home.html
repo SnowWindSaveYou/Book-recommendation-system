@@ -1,22 +1,36 @@
 <!doctype html>
 
 <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+        get_reommendation=(user_id)=>{
+            console.log(user_id)
+            $.get("{{ url_for('get_recommend_dom') }}",{user_id:user_id }).then((recommend_dom)=>{
+                $('#recommendastion').empty()
+                $('#recommendastion').append(recommend_dom)
+            });
+        }
+        $(document).on('click','#submit_id',function(){
+            var user_id = $('#user_id').val();
+            get_reommendation(user_id)
+        })
+	</script>
 <title>A phototype for e-book recommendastion</title>
-
-
 
 <div>
     <div>
         
         <form>
             <p>Login as User:</p>
-            <input type="number" />
-            <input type="submit" />
+            <input id="user_id" type="number" />
+            <input id="submit_id" type="button" value="submit"/>
         </form>
     </div>
-    <div>
+    <div id = "recommendastion">
+        {% if recommend_info %}
         <h2>Things You May Intereast</h2>
-        <div id="recommendation">
+        <div >
             {% for book in recommend_info %}
             <div class="book_box">
                 <a href="{{url_for('book_page',book_id=book.book_id)}}">
@@ -41,6 +55,7 @@
 
             {% endfor %}
         </div>
+        {% endif %}
     </div>
 
 </div>

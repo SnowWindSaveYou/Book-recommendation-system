@@ -90,14 +90,25 @@ def add_user_rating(user_id,book_id,rating):
 # Server apis
 # 
 #------------------------------------------------------------------------------------
+@app.route('/get_recommend_dom')
+def get_recommend_dom():
+    user_id = request.args.get('user_id')
+    print('---id  ',user_id)
+    if user_id == None:
+        return False
+    recommend_list = get_recommend_list(int(user_id))
+    recommend_info = get_book_infos(recommend_list)
+    return render_template('recommend.html',recommend_info = recommend_info)
+
+
 @app.route('/')
 def home_page():
-    # req = json.loads(request.data)
-    # user_id = req['user_id']
-    user_id = 588
-    recommend_list = get_recommend_list(user_id)
+    user_id = request.args.get('user_id')
+    print('---id  ',user_id)
+    if user_id == None:
+        return render_template('home.html')
+    recommend_list = get_recommend_list(int(user_id))
     recommend_info = get_book_infos(recommend_list)
-    # recommend_info = get_book_infos([1,2,3,4,5])
     return render_template('home.html',
         recommend_info = recommend_info
     )
@@ -112,6 +123,9 @@ def test():
 @app.route('/book/<int:book_id>',methods=['GET'])
 def book_page(book_id):
     book_info = get_book_info(book_id)
+    # result = get_simi_item_results(recommend_info)
+    recommend_info = get_book_infos([2,3,4,5,6,7,9,10,11,12])
+
     if book_info == None:
         return render_template('404.html')
     return render_template('book.html', home_url = url_for('home_page'),
@@ -121,6 +135,7 @@ def book_page(book_id):
         book_language = book_info['language_code'],
         book_rating = book_info['average_rating'],
         book_cover = book_info['image_url'],
+        recommend_info = recommend_info
         )
 
 
@@ -143,6 +158,7 @@ def get_item_results(user_id):
     pass
 
 def get_simi_item_results(item_id):
+    
     pass
 
 def get_recommend_list(user_id):
@@ -159,8 +175,6 @@ def get_recommend_list(user_id):
 
     else:
         recommend_list = [1,2,3,4,5,6,7,8,9,10]
-
-    print("___recommend_list",recommend_list)
     return recommend_list
 #------------------------------------------------------------------------------------r
 # 

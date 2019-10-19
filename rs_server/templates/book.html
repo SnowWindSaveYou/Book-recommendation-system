@@ -1,4 +1,5 @@
 <!doctype html>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
 {% if book_title %}
 <title>{{ book_title }}</title>
@@ -21,7 +22,22 @@
     </ul>
     
 </div>
+
 <a href="{{home_url}}">back</a>
+<br/>
+<div class="similar_items">
+        <h2>Similar books recommend to you</h2>
+        {% for book in recommend_info %}
+        <div class="book_box">
+            <a href="{{url_for('book_page',book_id=book.book_id)}}">
+                <img class="book_avater" src="{{book.small_image_url}}">
+            </a>
+            <p>{{ book.title[:10] }}</p>
+        </div>
+
+        {% endfor %}
+</div>
+
 
 {% else %}
 <title>Book 404</title>
