@@ -3,3 +3,4 @@
 MarkovCluster.ipynb
 *.xml
 *.pkg
+.ipynb_checkpoints/NeuMF develope-checkpoint.ipynb
