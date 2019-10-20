@@ -15,7 +15,7 @@ from models.NeuMF import NeuMF
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 
-neu_model = torch.load("./checkpoints/neumf_model.pkg")
+neu_model = torch.load("./checkpoints/neumf_model.pkl")
 NUM_ITEM = 10000
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #------------------------------------------------------------------------------------
