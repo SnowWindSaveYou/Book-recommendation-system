@@ -17,4 +17,4 @@ After enable mysql must first create dataset`bookrs`
 then run the file: `PrepareDataset.ipynb` or `setup_sql.py`
 
 ## Start application
-after setup the environment and sql, you can start application by runing `app.py` file, this is a web server based on python flask.
+after setup the environment and sql, you can start application by runing `re_server/app.py` file, this is a web server based on python flask.

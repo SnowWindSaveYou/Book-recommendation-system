@@ -89,7 +89,7 @@ class CsvToMysql(object):
 
 def if __name__ == "__main__":
     M = CsvToMysql(hostname=HOST, port=PORT, user=USER, passwd=PASS, db=DB)
-    rating_df = pd.read_csv('./ratings.csv', header = 0)
+    rating_df = pd.read_csv('./book-data/ratings.csv', header = 0)
     user_df = rating_df.groupby('user_id')['user_id'].agg(['count']).reset_index()
 
     M.read_dataframe("users", user_df,indexcol="user_id")
